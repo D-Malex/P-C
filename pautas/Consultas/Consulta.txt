@@ -1,0 +1,46 @@
+─────────────────────────CATALOGO────────────────────────────
+SELECT Stock, Titulo, CONCAT(a.Nombre, ' ', a.Apellido) AS Autor, Tipo Genero, e.Nombre Editorial FROM libro l
+INNER JOIN autor a ON a.ID_autor = l.ID_autor
+INNER JOIN genero g ON g.ID_genero = l.ID_genero
+INNER JOIN editorial e ON e.ID_editorial = l.ID_editorial;
+
+
+
+─────────────────────────VIGENCIA────────────────────────────SELECT CONCAT(s.Nombre, ' ', s.Apellido) Socio,  CONCAT('TEL: ', s.Telefono, '   MAIL: ', s.mail) Contacto, l.titulo Libro, 
+	   DATEDIFF(Fecha_entregado,Fecha_adquirido) AS Plazo, DATEDIFF(CURDATE(),Fecha_adquirido) AS Vigencia
+FROM alquiler a
+INNER JOIN socio s ON s.ID_socio = a.ID_socio
+INNER JOIN libro l ON l.ID_libro = a.ID_libro;
+
+
+
+─────────────────────────VENCIDOS────────────────────────────
+SELECT CONCAT(s.Nombre, ' ', s.Apellido) Socio,  CONCAT('TEL: ', s.Telefono, '   MAIL: ', s.mail) Contacto, l.titulo Libro, 
+	   DATEDIFF(Fecha_entregado,Fecha_adquirido) AS Plazo, DATEDIFF(CURDATE(),Fecha_adquirido) AS Vigencia
+FROM alquiler a 
+INNER JOIN socio s ON s.ID_socio = a.ID_socio
+INNER JOIN libro l ON l.ID_libro = a.ID_libro
+WHERE DATEDIFF(CURDATE(),Fecha_adquirido) <= 0;
+
+
+
+─────────────────────CANTIDAD POR GENERO───────────────────────
+SELECT g.Tipo Genero, COUNT(l.ID_genero) Cantidad FROM libro l
+INNER JOIN genero g ON l.ID_genero = g.ID_genero
+GROUP BY l.ID_genero;
+
+
+
+───────────────────────LIBROS MAS LEIDOS───────────────────────
+SELECT l.Titulo Libro, COUNT(a.ID_libro) Solicitado FROM alquiler a
+INNER JOIN libro l ON a.ID_libro = l.ID_libro 
+GROUP BY a.ID_libro
+ORDER BY COUNT(a.ID_libro) DESC;
+
+
+
+───────────────────────LECTORES ESTRELLA───────────────────────
+SELECT CONCAT(s.Nombre, ' ', s.Apellido) NombreCompleto, COUNT(a.ID_alquiler) Lecturas FROM alquiler a
+INNER JOIN socio s ON s.ID_socio = a.ID_socio
+GROUP BY CONCAT(s.Nombre, ' ', s.Apellido)
+ORDER BY COUNT(a.ID_alquiler) DESC;
